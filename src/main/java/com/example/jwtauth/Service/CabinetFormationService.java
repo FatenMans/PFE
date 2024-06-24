@@ -57,12 +57,10 @@ public class CabinetFormationService {
             CabinetFormation cabinet = cabinetOpt.get();
             Formateur formateur = formateurOpt.get();
 
-            cabinet.getFormateurs().add(formateur);
-            formateur.getCabinetFormations().add(cabinet);
-
-            cabinetFormationRepository.save(cabinet);
+            formateur.setCabinetFormation(cabinet);
             formateurRepository.save(formateur);
         }
     }
 }
+
 

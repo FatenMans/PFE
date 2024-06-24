@@ -62,6 +62,7 @@ public class  Participant {
 
 
     private int matricule;
+    private boolean isEnabled=false;
 
     @ManyToMany(mappedBy = "participants")
     @JsonIgnore

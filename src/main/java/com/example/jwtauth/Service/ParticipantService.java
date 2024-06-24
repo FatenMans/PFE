@@ -2,10 +2,14 @@ package com.example.jwtauth.Service;
 
 import com.example.jwtauth.DAO.LieuHebergementRepository;
 import com.example.jwtauth.DAO.ParticipantRepository;
+import com.example.jwtauth.Entity.Formateur;
 import com.example.jwtauth.Entity.LieuHebergement;
 import com.example.jwtauth.Entity.Participant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +18,11 @@ import java.util.Optional;
 @Service
 public class ParticipantService {
 
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}") private String sender;
     private final ParticipantRepository participantRepository;
     @Autowired
     private LieuHebergementRepository lieuHebergementRepository;
@@ -32,6 +41,25 @@ public class ParticipantService {
     }
 
     public Participant createParticipant(Participant participant) {
+
+        try {
+
+            // Creating a simple mail message
+            SimpleMailMessage mailMessage
+                    = new SimpleMailMessage();
+
+            // Setting up necessary details
+            mailMessage.setFrom(sender);
+            mailMessage.setTo(participant.getEmail());
+            mailMessage.setText("Votre  compte a éte créé avec succées");
+            mailMessage.setSubject("Validation de creation de compte");
+
+            // Sending the mail
+            javaMailSender.send(mailMessage);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return participantRepository.save(participant);
     }
 
@@ -66,4 +94,5 @@ public class ParticipantService {
     }
 
 }
+
 

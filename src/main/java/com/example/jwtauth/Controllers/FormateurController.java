@@ -1,6 +1,8 @@
 package com.example.jwtauth.Controllers;
 import com.example.jwtauth.Entity.Formateur;
+import com.example.jwtauth.Service.EmailService;
 import com.example.jwtauth.Service.FormateurService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,10 @@ import java.util.Optional;
 public class FormateurController {
 
     private final FormateurService formateurService;
+
+    @Autowired
+    private EmailService emailService;
+
 
     @Autowired
     public FormateurController(FormateurService formateurService) {
@@ -35,20 +41,27 @@ public class FormateurController {
     }
 
     @PostMapping("/create")
+    @Operation(summary="Ajouter un formateur")
     public ResponseEntity<Formateur> createFormateur(@RequestBody Formateur formateur) {
         Formateur newFormateur = formateurService.saveFormateur(formateur);
         return new ResponseEntity<>(newFormateur, HttpStatus.CREATED);
     }
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@ModelAttribute Formateur formateur, @RequestParam("cvFile") MultipartFile file) {
-        try {
-            formateur.setCvFile(file); // Set the uploaded file to the Formateur object
-            formateurService.save(formateur); // Save the Formateur object with the file information
-            return ResponseEntity.ok("File uploaded successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
-        }
+  //  @PostMapping("/upload")
+   // public ResponseEntity<String> handleFileUpload(@ModelAttribute Formateur formateur, @RequestParam("cvFile") MultipartFile file) {
+     //   try {
+       //     formateur.setCvFile(file); // Set the uploaded file to the Formateur object
+         //   formateurService.save(formateur); // Save the Formateur object with the file information
+           // return ResponseEntity.ok("File uploaded successfully.");
+        //} catch (Exception e) {
+          //  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
+        //}
+    //}
+
+    @PutMapping("/activate/{id}")
+    public void activateAccount(@PathVariable Long id){
+        formateurService.activateAccount(id);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFormateur(@PathVariable("id") Long id) {

@@ -76,19 +76,15 @@ public class FormationService {
             Formation formation = formationOptional.get();
             Lieu lieu = lieuOptional.get();
 
-            // Ajouter le Lieu à la Formation
-            formation.getLieux().add(lieu);
-            // Ajouter la Formation au Lieu
-            lieu.getFormations().add(formation);
+            formation.setLieu(lieu);
 
-            // Enregistrer les modifications
             formationRepository.save(formation);
-            lieuRepository.save(lieu);
         } else {
-            // Gérer le cas où la formation ou le lieu n'existe pas
+            // Handle case where formation or lieu does not exist
             throw new IllegalArgumentException("Formation or Lieu not found");
         }
     }
+
     public void deleteFormation(Long id) {
         formationRepository.deleteById(id);
     }

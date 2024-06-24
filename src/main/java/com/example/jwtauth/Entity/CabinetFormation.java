@@ -33,12 +33,7 @@ public class CabinetFormation {
     private Lieu lieu;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "CabinetFormation_Formateur",
-            joinColumns = @JoinColumn(name = "cabinet_formation_id"),
-            inverseJoinColumns = @JoinColumn(name = "formateur_id")
-    )
-    private Set<Formateur> formateurs;
 
+    @OneToMany(mappedBy = "cabinetFormation")
+    private Set<Formateur> formateurs;
 }

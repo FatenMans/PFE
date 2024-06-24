@@ -38,7 +38,7 @@ public class CabinetFormationController {
     @PostMapping("/{cabinetId}/formateurs/{formateurId}")
     public ResponseEntity<Void> addFormateurToCabinet(@PathVariable Long cabinetId, @PathVariable Long formateurId) {
         cabinetFormationService.addFormateurToCabinet(cabinetId, formateurId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

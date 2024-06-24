@@ -60,13 +60,7 @@ public class Formation {
     )
     private Set<Participant> participants;
 
-    @ManyToMany
-    @JoinTable(
-            name = "formation_lieu",
-            joinColumns = @JoinColumn(name = "formation_id"),
-            inverseJoinColumns = @JoinColumn(name = "lieu_id")
-    )
-    private List<Lieu> lieux;
+
     @ManyToOne
     @JoinColumn(name = "theme_id")
     @JsonIgnore

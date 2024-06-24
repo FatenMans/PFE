@@ -1,6 +1,7 @@
 package com.example.jwtauth.Configuration;
 
 
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,14 +47,15 @@ public class WebSecuityConfiguration  {
                 .authorizeHttpRequests(auth->auth.requestMatchers(  "/authenticate",
                                 "/registerNewUser",
                                 "/createNewRole",
-                                "/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
+                                "/**",
+                                "/v3/api-docs/**"
+                                ).permitAll()
 
-                .requestMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated());
+                        .requestMatchers(HttpHeaders.ALLOW).permitAll()
+                        .anyRequest().authenticated());
 
-                http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -64,10 +66,18 @@ public class WebSecuityConfiguration  {
         return new BCryptPasswordEncoder();
     }
 
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user")
+                .password("{noop}password")
+                .roles("USER");
+    }
+
 
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
 }

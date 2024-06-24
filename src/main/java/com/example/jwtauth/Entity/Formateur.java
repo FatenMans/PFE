@@ -1,6 +1,8 @@
 package com.example.jwtauth.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,16 +36,20 @@ public class Formateur {
     private Double rang;
     private String autorisation;
     private  String typeFormateur;
-    private String dtype;
-    @Transient // If using JPA, this annotation is used to indicate that the field is not persisted in the database
-    private MultipartFile cvFile;
+
+    private String mail;
+
+    private boolean isEnabled=false;
+
+    private String CvFileName;
 
 
-    @ManyToMany(mappedBy = "formateurs")
 
-    private Set<CabinetFormation> cabinetFormations;
+    @ManyToOne
+    private CabinetFormation cabinetFormation;
 
     @OneToMany(mappedBy = "formateur")
+    @JsonIgnoreProperties("formateur")
     private Set<Formation> formations;
 
 
