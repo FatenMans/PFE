@@ -25,13 +25,13 @@ public class  Participant {
 
     private String nom;
     private String prenom;
-    private String type;
+
     private String lieutravail;
     private String email;
 
     private String datNais;
 
-    private String service;
+    private String Affectation;
 
 
     private String codGrad;
@@ -52,7 +52,7 @@ public class  Participant {
     private Boolean hebergementNuite;
 
 
-    private String typeAgent;
+
 
 
     private Boolean confirmation;

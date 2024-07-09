@@ -23,11 +23,11 @@ public class Theme {
 
     private String codeTheme;
     private String theme;
-    private String typeConvention;
+
     private String typeThemeIntraInter;
     private String accord;
-    private String contrat;
-    private String autrePlLib;
+
+
     private String documents;
 
     private String codeFormatExterne;

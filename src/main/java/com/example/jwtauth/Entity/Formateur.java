@@ -32,7 +32,7 @@ public class Formateur {
     private String tel;
     private String etatique_privé;
     private Integer montant;
-    private Double moyenne;
+
     private Double rang;
     private String autorisation;
     private  String typeFormateur;
@@ -46,6 +46,7 @@ public class Formateur {
 
 
     @ManyToOne
+    @JsonIgnore
     private CabinetFormation cabinetFormation;
 
     @OneToMany(mappedBy = "formateur")

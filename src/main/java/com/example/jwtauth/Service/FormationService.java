@@ -2,15 +2,9 @@ package com.example.jwtauth.Service;
 
 
 
-import com.example.jwtauth.DAO.FormationRepository;
-import com.example.jwtauth.DAO.LieuRepository;
-import com.example.jwtauth.DAO.ParticipantRepository;
-import com.example.jwtauth.DAO.ThemeRepository;
-import com.example.jwtauth.Entity.Formation;
+import com.example.jwtauth.DAO.*;
+import com.example.jwtauth.Entity.*;
 
-import com.example.jwtauth.Entity.Lieu;
-import com.example.jwtauth.Entity.Participant;
-import com.example.jwtauth.Entity.Theme;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -27,6 +21,8 @@ public class FormationService {
     @Autowired
     private ParticipantRepository participantRepository;
     @Autowired
+    private FormateurRepository formateurRepository;
+    @Autowired
     private ThemeRepository themeRepository;
     @Autowired
     private LieuRepository lieuRepository;
@@ -39,12 +35,22 @@ public class FormationService {
         return formationRepository.findById(id);
     }
 
-    public Formation createFormation(Formation formation) {
+    public Formation createFormation(Formation formation, Long formateurId, Long themeId) {
+         Theme theme = themeRepository.findById(themeId).orElseThrow(EntityNotFoundException::new);
+         formation.setTheme(theme);
+
+        Formateur formateur =formateurRepository.findById(formateurId).orElseThrow(EntityNotFoundException::new);
+        formation.setFormateur(formateur);
         return formationRepository.save(formation);
     }
 
-    public Formation updateFormation(Long id, Formation updatedFormation) {
+    public Formation updateFormation(Long id, Formation updatedFormation,Long idFormateur,Long idTheme) {
+
         if (formationRepository.existsById(id)) {
+            Formateur formateur = formateurRepository.findById(idFormateur).orElseThrow(EntityNotFoundException::new);
+            updatedFormation.setFormateur(formateur);
+            Theme theme = themeRepository.findById(idTheme).orElseThrow(EntityNotFoundException::new);
+            updatedFormation.setTheme(theme);
             updatedFormation.setId(id);
             return formationRepository.save(updatedFormation);
         } else {
@@ -90,5 +96,8 @@ public class FormationService {
     }
 
 
+    public List<Formation> getFormationsByParticipant(Long participantId) {
+        return formationRepository.findByParticipantsId(participantId);
+    }
 }
 

@@ -1,6 +1,7 @@
 package com.example.jwtauth.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,21 +28,16 @@ public class Formation {
 
 
     private int numGroupe;
-    private String dateDebutGroupe;
-    private String dateFinGroupe;
+    private String nomFormation;
+    private String dateDebut;
+    private String dateFin;
 
-    private String dureGroupe;
+    private String duree;
     private String typeformation; // externe, interne, etc.
 
-    private double cout;
 
-    private double tva;
-    private double mtTva;
     private double fraisTotalFormateur;
-    private String nomPers;
-    private String matPers;
-    private String libFonct;
-    private String libServ;
+
 
 
     @ManyToOne
@@ -63,7 +59,7 @@ public class Formation {
 
     @ManyToOne
     @JoinColumn(name = "theme_id")
-    @JsonIgnore
+    @JsonIgnoreProperties("formations")
     private Theme theme;
 
 }

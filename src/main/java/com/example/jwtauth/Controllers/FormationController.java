@@ -35,15 +35,17 @@ public class FormationController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Formation> createFormation(@RequestBody Formation formation) {
-        Formation createdFormation = formationService.createFormation(formation);
+    @PostMapping("/{formateurId}/{themeId}")
+    public ResponseEntity<Formation> createFormation(@RequestBody Formation formation, @PathVariable Long formateurId,@PathVariable Long themeId){
+
+        Formation createdFormation = formationService.createFormation(formation,formateurId,themeId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFormation);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Formation> updateFormation(@PathVariable Long id, @RequestBody Formation updatedFormation) {
-        Formation formation = formationService.updateFormation(id, updatedFormation);
+    @PutMapping("/{id}/{idFormateur}/{idTheme}")
+    public ResponseEntity<Formation> updateFormation(@PathVariable Long id, @RequestBody Formation updatedFormation,@PathVariable Long idFormateur,@PathVariable Long idTheme) {
+        Formation formation = formationService.updateFormation(id, updatedFormation,idFormateur,idTheme);
         if (formation != null) {
             return ResponseEntity.ok().body(formation);
         } else {
@@ -67,7 +69,11 @@ public class FormationController {
         return ResponseEntity.ok("Lieu added to formation successfully.");
     }
 
-
+    @GetMapping("/participant")
+    public List<Formation> getFormationsByParticipant(@RequestParam Long participantId) {
+        // Récupérer les formations par participant
+        return formationService.getFormationsByParticipant(participantId);
+    }
 
 }
 
