@@ -58,9 +58,9 @@ public class FormationController {
         formationService.deleteFormation(id);
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/{formationId}/participants/{participantId}")
-    public ResponseEntity<Void> addParticipantToFormation(@PathVariable Long formationId, @PathVariable Long participantId) {
-        formationService.addParticipantToFormation(formationId, participantId);
+    @PostMapping("/{formationId}/participants/{participantnom}")
+    public ResponseEntity<Void> addParticipantToFormation(@PathVariable Long formationId, @PathVariable String  participantnom) {
+        formationService.addParticipantToFormation(formationId, participantnom);
         return ResponseEntity.ok().build();
     }
     @PostMapping("/{formationId}/lieux/{lieuId}")

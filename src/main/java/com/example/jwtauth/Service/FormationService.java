@@ -103,10 +103,10 @@ public class FormationService {
     public List<Formation> getFormationsByParticipant(Long participantId) {
         return formationRepository.findByParticipantsId(participantId);
     }
-    public void addParticipantToFormation(Long formationId, Long participantId) {
+    public void addParticipantToFormation(Long formationId, String participantnom) {
         Formation formation = formationRepository.findById(formationId)
                 .orElseThrow(() -> new EntityNotFoundException("Formation not found"));
-        Participant participant = participantRepository.findById(participantId)
+        Participant participant = participantRepository.findByNom(participantnom)
                 .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
 
         formation.getParticipants().add(participant);

@@ -20,6 +20,8 @@ public class Demande {
     private String service;
     private String statut;
     private LocalDate dateDemande;
+    private boolean validee=false; // Champ pour la validité
+
 
     @ManyToOne // Utilisez @ManyToOne si un participant peut avoir plusieurs demandes
     @JoinColumn(name = "participant_id")

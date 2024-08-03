@@ -38,4 +38,11 @@ private DemandeRepository demandeRepository;
         demandeService.acceptDemande(id);
         return ResponseEntity.ok().build();
     }
+
+
+    @PostMapping("/refuser/{id}")
+    public ResponseEntity<Void> refuserDemande(@PathVariable Long id) {
+        demandeService.refuserDemande(id);
+        return ResponseEntity.ok().build();
+    }
 }
