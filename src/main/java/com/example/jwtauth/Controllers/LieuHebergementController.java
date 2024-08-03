@@ -3,7 +3,9 @@ package com.example.jwtauth.Controllers;
 import com.example.jwtauth.Entity.LieuHebergement;
 import com.example.jwtauth.Service.LieuHebergementService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +29,15 @@ public class LieuHebergementController {
         Optional<LieuHebergement> lieuHebergement = lieuHebergementService.getLieuHebergementById(id);
         return lieuHebergement.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
     @PostMapping("/create")
-    public LieuHebergement createLieuHebergement(@RequestBody LieuHebergement lieuHebergement) {
-        return lieuHebergementService.saveLieuHebergement(lieuHebergement);
+    @Operation(summary = "Ajouter un lieu d'hébergement")
+    public ResponseEntity<?> createLieuHebergement(@RequestBody LieuHebergement lieuHebergement) {
+        try {
+            LieuHebergement newLieuHebergement = lieuHebergementService.saveLieuHebergement(lieuHebergement);
+            return new ResponseEntity<>(newLieuHebergement, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")

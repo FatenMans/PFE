@@ -13,11 +13,17 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Plan_Formation {
+public class Plan_Formation extends  Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code_action;
+    private String  groupe_N;
+    private String dateDebut;
+    private String datefin;
+    private String duree;
+    private String NbreCandidat;
 
     @ManyToOne
     @JoinColumn(name = "formation_id")

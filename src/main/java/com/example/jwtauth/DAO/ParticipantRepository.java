@@ -9,7 +9,12 @@ import java.util.Optional;
 
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant,Long> {
-    Optional<Participant> findByMatricule(int matricule);
+    Optional<Participant> findByMatricule(String matricule);
     List<Participant> findByFormationsId(Long formationId);
+
+    Optional<Participant> findByEmail(String email);
+
+
+    Optional<Participant> findByNom(String nom);
 
 }

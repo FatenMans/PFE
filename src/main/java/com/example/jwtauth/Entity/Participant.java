@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class  Participant {
+public class  Participant extends  Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,8 @@ public class  Participant {
 
     private String codGrad;
 
+    private String password;
+
 
     private String datEmb;
 
@@ -44,6 +46,7 @@ public class  Participant {
 
 
     private double salaire;
+    private Boolean isInternalTrainer = false;
 
 
     private String sexe;
@@ -61,8 +64,10 @@ public class  Participant {
     private int agePers;
 
 
-    private int matricule;
+    private String matricule;
     private boolean isEnabled=false;
+    private String lastModifiedBy; // Ajout du champ pour la traçabilité
+
 
     @ManyToMany(mappedBy = "participants")
     @JsonIgnore
@@ -79,7 +84,9 @@ public class  Participant {
 
 
 
-
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Demande> demandes;
 
 
 

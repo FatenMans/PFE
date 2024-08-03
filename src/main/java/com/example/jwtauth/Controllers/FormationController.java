@@ -58,10 +58,10 @@ public class FormationController {
         formationService.deleteFormation(id);
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/formations/{formationId}/participants/{participantId}")
-    public ResponseEntity<String> addParticipantToFormation(@PathVariable Long formationId, @PathVariable Long participantId) {
+    @PostMapping("/{formationId}/participants/{participantId}")
+    public ResponseEntity<Void> addParticipantToFormation(@PathVariable Long formationId, @PathVariable Long participantId) {
         formationService.addParticipantToFormation(formationId, participantId);
-        return ResponseEntity.ok("Participant added to formation successfully.");
+        return ResponseEntity.ok().build();
     }
     @PostMapping("/{formationId}/lieux/{lieuId}")
     public ResponseEntity<String> addLieuToFormation(@PathVariable Long formationId, @PathVariable Long lieuId) {
@@ -76,4 +76,3 @@ public class FormationController {
     }
 
 }
-

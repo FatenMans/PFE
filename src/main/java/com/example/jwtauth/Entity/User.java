@@ -8,7 +8,7 @@ import java.util.Set;
 @Entity
 
 
-public class User {
+public class User extends Auditable {
 
 
     @Id

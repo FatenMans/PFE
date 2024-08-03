@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Theme {
+public class Theme extends  Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +29,7 @@ public class Theme {
 
 
     private String documents;
+
 
     private String codeFormatExterne;
     private String codeFormateurInterne;

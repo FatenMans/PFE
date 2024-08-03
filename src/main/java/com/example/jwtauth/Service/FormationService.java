@@ -1,13 +1,9 @@
 package com.example.jwtauth.Service;
 
-
-
 import com.example.jwtauth.DAO.*;
 import com.example.jwtauth.Entity.*;
-
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +14,16 @@ public class FormationService {
 
     @Autowired
     private FormationRepository formationRepository;
+
     @Autowired
     private ParticipantRepository participantRepository;
+
     @Autowired
     private FormateurRepository formateurRepository;
+
     @Autowired
     private ThemeRepository themeRepository;
+
     @Autowired
     private LieuRepository lieuRepository;
 
@@ -34,46 +34,52 @@ public class FormationService {
     public Optional<Formation> getFormationById(Long id) {
         return formationRepository.findById(id);
     }
+    public Optional<Formation> findByNomFormation(String NomFormation) {
+        return formationRepository.findByNomFormation(NomFormation);
+    }
 
     public Formation createFormation(Formation formation, Long formateurId, Long themeId) {
-         Theme theme = themeRepository.findById(themeId).orElseThrow(EntityNotFoundException::new);
-         formation.setTheme(theme);
+        Optional<Formation> existingFormation = formationRepository.findByNomFormation(formation.getNomFormation());
+        if (existingFormation.isPresent()) {
+            throw new IllegalArgumentException("Une formation avec ce nom existe déjà.");
+        }
 
-        Formateur formateur =formateurRepository.findById(formateurId).orElseThrow(EntityNotFoundException::new);
+        Theme theme = themeRepository.findById(themeId).orElseThrow(EntityNotFoundException::new);
+        formation.setTheme(theme);
+
+        Formateur formateur = formateurRepository.findById(formateurId).orElseThrow(EntityNotFoundException::new);
         formation.setFormateur(formateur);
+
         return formationRepository.save(formation);
     }
 
-    public Formation updateFormation(Long id, Formation updatedFormation,Long idFormateur,Long idTheme) {
+    public Formation updateFormation(Long id, Formation updatedFormation, Long idFormateur, Long idTheme) {
+        Formation existingFormation = formationRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        if (formationRepository.existsById(id)) {
-            Formateur formateur = formateurRepository.findById(idFormateur).orElseThrow(EntityNotFoundException::new);
-            updatedFormation.setFormateur(formateur);
-            Theme theme = themeRepository.findById(idTheme).orElseThrow(EntityNotFoundException::new);
-            updatedFormation.setTheme(theme);
-            updatedFormation.setId(id);
-            return formationRepository.save(updatedFormation);
-        } else {
-            return null; // Or throw an exception indicating the formation doesn't exist
-        }
+        existingFormation.setNomFormation(updatedFormation.getNomFormation());
+        existingFormation.setNumGroupe(updatedFormation.getNumGroupe());
+        existingFormation.setDateDebut(updatedFormation.getDateDebut());
+        existingFormation.setDateFin(updatedFormation.getDateFin());
+        existingFormation.setDuree(updatedFormation.getDuree());
+        existingFormation.setTypeformation(updatedFormation.getTypeformation());
+        existingFormation.setFraisTotalFormateur(updatedFormation.getFraisTotalFormateur());
+        existingFormation.setDureeParJour(updatedFormation.getDureeParJour());
+        existingFormation.setCreatedBy(updatedFormation.getCreatedBy());
+        existingFormation.setCreationDate(updatedFormation.getCreationDate());
+        existingFormation.setLastModifiedBy(updatedFormation.getLastModifiedBy());
+        existingFormation.setLastModifiedDate(updatedFormation.getLastModifiedDate());
+
+        Formateur formateur = formateurRepository.findById(idFormateur).orElseThrow(EntityNotFoundException::new);
+        existingFormation.setFormateur(formateur);
+
+        Theme theme = themeRepository.findById(idTheme).orElseThrow(EntityNotFoundException::new);
+        existingFormation.setTheme(theme);
+
+        return formationRepository.save(existingFormation);
     }
-    public void addParticipantToFormation(Long formationId, Long participantId) {
-        Optional<Formation> formationOptional = formationRepository.findById(formationId);
-        Optional<Participant> participantOptional = participantRepository.findById(participantId);
 
-        if (formationOptional.isPresent() && participantOptional.isPresent()) {
-            Formation formation = formationOptional.get();
-            Participant participant = participantOptional.get();
 
-            formation.getParticipants().add(participant);
-            participant.getFormations().add(formation);
 
-            formationRepository.save(formation);
-            participantRepository.save(participant);
-        } else {
-            // Gérer le cas où la formation ou le participant n'existe pas
-        }
-    }
     public void addLieuToFormation(Long formationId, Long lieuId) {
         Optional<Formation> formationOptional = formationRepository.findById(formationId);
         Optional<Lieu> lieuOptional = lieuRepository.findById(lieuId);
@@ -86,7 +92,6 @@ public class FormationService {
 
             formationRepository.save(formation);
         } else {
-            // Handle case where formation or lieu does not exist
             throw new IllegalArgumentException("Formation or Lieu not found");
         }
     }
@@ -95,9 +100,16 @@ public class FormationService {
         formationRepository.deleteById(id);
     }
 
-
     public List<Formation> getFormationsByParticipant(Long participantId) {
         return formationRepository.findByParticipantsId(participantId);
     }
-}
+    public void addParticipantToFormation(Long formationId, Long participantId) {
+        Formation formation = formationRepository.findById(formationId)
+                .orElseThrow(() -> new EntityNotFoundException("Formation not found"));
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
 
+        formation.getParticipants().add(participant);
+        formationRepository.save(formation);
+    }
+}

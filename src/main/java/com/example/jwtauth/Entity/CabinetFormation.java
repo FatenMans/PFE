@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,11 +18,11 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CabinetFormation {
+public class CabinetFormation extends  Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String adress;
+    private String nomCabinet;
     private  String contact;
     private String tel;
     private  String email;
@@ -34,6 +35,6 @@ public class CabinetFormation {
 
 
 
-    @OneToMany(mappedBy = "cabinetFormation")
-    private Set<Formateur> formateurs;
+    @OneToMany(mappedBy = "cabinetFormation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Formateur> formateurs = new HashSet<>();
 }

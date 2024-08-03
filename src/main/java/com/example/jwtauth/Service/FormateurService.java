@@ -24,7 +24,8 @@ public class FormateurService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @Value("${spring.mail.username}") private String sender;
+    @Value("${spring.mail.username}")
+    private String sender;
 
     @Autowired
     public FormateurService(FormateurRepository formateurRepository) {
@@ -38,11 +39,45 @@ public class FormateurService {
     public Optional<Formateur> getFormateurById(Long id) {
         return formateurRepository.findById(id);
     }
+    public Optional<Formateur> findByCin(String cin) {
+        return formateurRepository.findByCin(cin);
+    }
 
     public Formateur saveFormateur(Formateur formateur) {
-
-
+        Optional<Formateur> existingFormateur = formateurRepository.findByCin(formateur.getCin());
+        if (existingFormateur.isPresent() && !existingFormateur.get().getId().equals(formateur.getId())) {
+            throw new IllegalArgumentException("Un formateur avec ce CIN existe déjà.");
+        }
         return formateurRepository.save(formateur);
+    }
+
+    public Formateur updateFormateur(Long id, Formateur updatedFormateur, boolean activate) {
+        Optional<Formateur> optionalFormateur = formateurRepository.findById(id);
+        if (optionalFormateur.isPresent()) {
+            Formateur formateur = optionalFormateur.get();
+            formateur.setCode(updatedFormateur.getCode());
+            formateur.setNom(updatedFormateur.getNom());
+            formateur.setPrenom(updatedFormateur.getPrenom());
+            formateur.setCin(updatedFormateur.getCin());
+            formateur.setMatricule(updatedFormateur.getMatricule());
+            formateur.setTel(updatedFormateur.getTel());
+            formateur.setEtatique_privé(updatedFormateur.getEtatique_privé());
+            formateur.setMontant(updatedFormateur.getMontant());
+            formateur.setRang(updatedFormateur.getRang());
+            formateur.setAutorisation(updatedFormateur.getAutorisation());
+            formateur.setTypeFormateur(updatedFormateur.getTypeFormateur());
+            formateur.setMail(updatedFormateur.getMail());
+            formateur.setLastModifiedBy(updatedFormateur.getLastModifiedBy());
+            formateur.setLastModifiedDate(updatedFormateur.getLastModifiedDate());
+            formateur.setCreatedBy(updatedFormateur.getCreatedBy());
+            formateur.setCreationDate(updatedFormateur.getCreationDate());
+            formateur.setCabinetFormation(updatedFormateur.getCabinetFormation());
+            formateur.setFormations(updatedFormateur.getFormations());
+            formateur.setCvFileName(updatedFormateur.getCvFileName());
+            formateur.setEnabled(activate);
+            return formateurRepository.save(formateur);
+        }
+        return formateurRepository.save(updatedFormateur);
     }
 
     public void deleteFormateur(Long id) {

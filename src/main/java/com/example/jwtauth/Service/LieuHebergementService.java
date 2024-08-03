@@ -23,9 +23,18 @@ public class LieuHebergementService {
         return lieuHebergementRepository.findById(id);
     }
 
+    public Optional<LieuHebergement> findByLieuheb(String lieuheb) {
+        return lieuHebergementRepository.findByLieuheb(lieuheb);
+    }
+
     public LieuHebergement saveLieuHebergement(LieuHebergement lieuHebergement) {
+        Optional<LieuHebergement> existingLieuHebergement = lieuHebergementRepository.findByLieuheb(lieuHebergement.getLieuheb());
+        if (existingLieuHebergement.isPresent() && !existingLieuHebergement.get().getId().equals(lieuHebergement.getId())) {
+            throw new IllegalArgumentException("Un lieu d'hébergement avec ce nom existe déjà.");
+        }
         return lieuHebergementRepository.save(lieuHebergement);
     }
+
 
     public void deleteLieuHebergement(Long id) {
         lieuHebergementRepository.deleteById(id);

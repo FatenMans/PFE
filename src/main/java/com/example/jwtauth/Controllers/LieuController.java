@@ -2,7 +2,10 @@ package com.example.jwtauth.Controllers;
 
 import com.example.jwtauth.Entity.Lieu;
 import com.example.jwtauth.Service.LieuService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +28,14 @@ public class LieuController {
     }
 
     @PostMapping("/create")
-    public Lieu createLieu(@RequestBody Lieu lieu) {
-        return lieuService.createLieu(lieu);
+    @Operation(summary = "Ajouter un lieu")
+    public ResponseEntity<?> createLieu(@RequestBody Lieu lieu) {
+        try {
+            Lieu newLieu = lieuService.saveLieu(lieu);
+            return new ResponseEntity<>(newLieu, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")

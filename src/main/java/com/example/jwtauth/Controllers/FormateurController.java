@@ -41,10 +41,14 @@ public class FormateurController {
     }
 
     @PostMapping("/create")
-    @Operation(summary="Ajouter un formateur")
-    public ResponseEntity<Formateur> createFormateur(@RequestBody Formateur formateur) {
-        Formateur newFormateur = formateurService.saveFormateur(formateur);
-        return new ResponseEntity<>(newFormateur, HttpStatus.CREATED);
+    @Operation(summary = "Ajouter un formateur")
+    public ResponseEntity<?> createFormateur(@RequestBody Formateur formateur) {
+        try {
+            Formateur newFormateur = formateurService.saveFormateur(formateur);
+            return new ResponseEntity<>(newFormateur, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
   //  @PostMapping("/upload")
    // public ResponseEntity<String> handleFileUpload(@ModelAttribute Formateur formateur, @RequestParam("cvFile") MultipartFile file) {
@@ -57,12 +61,17 @@ public class FormateurController {
         //}
     //}
 
-    @PutMapping("/activate/{id}")
-    public void activateAccount(@PathVariable Long id){
-        formateurService.activateAccount(id);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Formateur> updateFormateur(
+            @PathVariable Long id,
+            @RequestBody Formateur formateur,
+
+            @RequestParam(value = "activate", required = false) boolean activate
+    ) {
+
+        Formateur updatedFormateur = formateurService.updateFormateur(id, formateur, activate);
+        return updatedFormateur != null ? ResponseEntity.ok(updatedFormateur) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFormateur(@PathVariable("id") Long id) {
         formateurService.deleteFormateur(id);

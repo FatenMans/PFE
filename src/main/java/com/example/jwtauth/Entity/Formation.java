@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +21,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Formation {
+@EntityListeners(AuditingEntityListener.class)
+
+public class Formation  extends  Auditable{
 
 
     @Id
@@ -37,6 +42,12 @@ public class Formation {
 
 
     private double fraisTotalFormateur;
+    private Double dureeParJour; // Ajout du champ pour la durée par jour
+
+
+
+
+
 
 
 

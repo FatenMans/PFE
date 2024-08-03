@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Formateur {
+public class Formateur extends Auditable{
 
 
     @Id
@@ -45,9 +45,10 @@ public class Formateur {
 
 
 
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "cabinet_formation_id")
     private CabinetFormation cabinetFormation;
+
 
     @OneToMany(mappedBy = "formateur")
     @JsonIgnoreProperties("formateur")

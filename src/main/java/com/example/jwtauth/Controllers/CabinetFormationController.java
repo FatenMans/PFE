@@ -1,6 +1,7 @@
 package com.example.jwtauth.Controllers;
 
 import com.example.jwtauth.Entity.CabinetFormation;
+import com.example.jwtauth.Entity.Formation;
 import com.example.jwtauth.Service.CabinetFormationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,9 @@ public class CabinetFormationController {
         return cabinetFormationService.getCabinetFormationById(id);
     }
 
-    @PostMapping("/create")
-    public CabinetFormation createCabinetFormation(@RequestBody CabinetFormation cabinetFormation) {
-        return cabinetFormationService.createCabinetFormation(cabinetFormation);
+    @PostMapping("/create/{idLieu}")
+    public CabinetFormation createCabinetFormation(@RequestBody CabinetFormation cabinetFormation, @PathVariable Long idLieu) {
+        return cabinetFormationService.createCabinetFormation(cabinetFormation, idLieu);
     }
 
     @PutMapping("/{id}")

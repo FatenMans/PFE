@@ -40,6 +40,7 @@ public class UserService {
         user.setUserPassword(getEncodedPassword(user.getUserPassword()));
 
         User savedUser = userDAO.save(user);
+        System.out.println("savedUser = " + savedUser);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
