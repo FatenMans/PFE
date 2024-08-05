@@ -32,7 +32,7 @@ public class Plan_FormationController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Plan_Formation> createPlanFormation(@RequestBody Plan_Formation planFormation,
                                                               @RequestParam Long themeId,
                                                               @RequestParam List<Long> lieuId) {

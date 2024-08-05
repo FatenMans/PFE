@@ -23,7 +23,7 @@ public class Plan_Formation extends  Auditable {
     private String dateDebut;
     private String datefin;
     private String duree;
-    private String NbreCandidat;
+    private String nbreCandidat;
 
     @ManyToOne
     @JoinColumn(name = "formation_id")

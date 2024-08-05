@@ -43,14 +43,16 @@ public class ThemeController {
             ObjectMapper objectMapper = new ObjectMapper();
             Theme theme = objectMapper.readValue(themeData, Theme.class);
 
-            // Enregistrez le fichier PDF dans un répertoire spécifique ou traitez-le selon vos besoins
-            // Par exemple, vous pouvez le sauvegarder sur le disque ou le stocker en base64 dans la base de données
-
-            // Exemple de sauvegarde du fichier sur le disque
+            // Chemin de sauvegarde du fichier PDF
             String filePath = "path/to/save/directory/" + file.getOriginalFilename();
-            file.transferTo(new File(filePath));
-            theme.setDocuments(filePath); // Enregistrez le chemin du fichier dans votre entité Theme
 
+            // Sauvegarder le fichier PDF
+            file.transferTo(new File(filePath));
+
+            // Enregistrer le chemin du fichier PDF dans l'entité Theme
+            theme.setDocuments(filePath);
+
+            // Sauvegarder le thème avec le fichier
             Theme createdTheme = themeService.createTheme(theme);
             return ResponseEntity.ok(createdTheme);
         } catch (IOException e) {
@@ -58,12 +60,11 @@ public class ThemeController {
         }
     }
 
-
     @PostMapping("/create")
     @Operation(summary = "Ajouter un thème")
     public ResponseEntity<?> createTheme(@RequestBody Theme theme) {
         try {
-            Theme newTheme = themeService.saveTheme(theme);
+            Theme newTheme = themeService.createTheme(theme);
             return new ResponseEntity<>(newTheme, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -75,11 +76,13 @@ public class ThemeController {
         themeService.deleteTheme(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Theme> updateTheme(@PathVariable Long id, @RequestBody Theme theme) {
         Theme updatedTheme = themeService.updateTheme(id, theme);
         return updatedTheme != null ? ResponseEntity.ok(updatedTheme) : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/document/{filename:.+}")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String filename) {
         try {
@@ -94,4 +97,3 @@ public class ThemeController {
         }
     }
 }
-

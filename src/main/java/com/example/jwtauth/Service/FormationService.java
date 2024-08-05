@@ -104,12 +104,22 @@ public class FormationService {
         return formationRepository.findByParticipantsId(participantId);
     }
     public void addParticipantToFormation(Long formationId, String participantnom) {
+        // Retrieve formation by ID
         Formation formation = formationRepository.findById(formationId)
                 .orElseThrow(() -> new EntityNotFoundException("Formation not found"));
+
+        // Retrieve participant by name
         Participant participant = participantRepository.findByNom(participantnom)
                 .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
 
+        // Add participant to formation
         formation.getParticipants().add(participant);
+
+        // Save the updated formation
         formationRepository.save(formation);
     }
+    public List<Formation> getFormationsByParticipantId(Long id) {
+        return formationRepository.findByParticipantsId(id);
+    }
+
 }

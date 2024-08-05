@@ -59,20 +59,22 @@ public class FormationController {
         return ResponseEntity.noContent().build();
     }
     @PostMapping("/{formationId}/participants/{participantnom}")
-    public ResponseEntity<Void> addParticipantToFormation(@PathVariable Long formationId, @PathVariable String  participantnom) {
+    public ResponseEntity<Void> addParticipantToFormation(@PathVariable Long formationId, @PathVariable String participantnom) {
         formationService.addParticipantToFormation(formationId, participantnom);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/{formationId}/lieux/{lieuId}")
     public ResponseEntity<String> addLieuToFormation(@PathVariable Long formationId, @PathVariable Long lieuId) {
         formationService.addLieuToFormation(formationId, lieuId);
         return ResponseEntity.ok("Lieu added to formation successfully.");
     }
 
-    @GetMapping("/participant")
-    public List<Formation> getFormationsByParticipant(@RequestParam Long participantId) {
-        // Récupérer les formations par participant
-        return formationService.getFormationsByParticipant(participantId);
+
+    @GetMapping("/by-participant/{id}")
+    public ResponseEntity<List<Formation>> getFormationsByParticipant(@PathVariable Long id) {
+        List<Formation> formations = formationService.getFormationsByParticipantId(id);
+        return ResponseEntity.ok(formations);
     }
 
 }
