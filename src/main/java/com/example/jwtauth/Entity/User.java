@@ -12,6 +12,7 @@ public class User extends Auditable {
 
 
     @Id
+
     private String userName;
     private String userFirstName;
     private String userLastName;

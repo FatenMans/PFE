@@ -10,8 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface FormationRepository extends JpaRepository<Formation,Long> {
-    List<Formation> findByParticipantsId(Long participantId);
     Optional<Formation> findByNomFormation(String cin);
+
+    List<Formation>findByParticipantsId(Long participantId);
 
 
 

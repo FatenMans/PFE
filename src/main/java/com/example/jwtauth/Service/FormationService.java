@@ -6,8 +6,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class FormationService {
@@ -121,5 +123,19 @@ public class FormationService {
     public List<Formation> getFormationsByParticipantId(Long id) {
         return formationRepository.findByParticipantsId(id);
     }
+    public Formation inviteParticipant(Long formationId, Long participantId) {
+        Formation formation = formationRepository.findById(formationId).orElseThrow(() -> new RuntimeException("Formation not found"));
+        Participant participant = participantRepository.findById(participantId).orElseThrow(() -> new RuntimeException("Participant not found"));
+
+        formation.getParticipants().add(participant);
+        return formationRepository.save(formation);
+    }
+
+    public Set<Participant> getFormationParticipants(Long formationId) {
+        Formation formation = formationRepository.findById(formationId).orElseThrow(() -> new RuntimeException("Formation not found"));
+        return formation.getParticipants();
+    }
 
 }
+
+

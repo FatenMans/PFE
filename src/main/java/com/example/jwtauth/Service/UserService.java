@@ -1,8 +1,10 @@
 package com.example.jwtauth.Service;
 
 
+import com.example.jwtauth.DAO.FormateurRepository;
 import com.example.jwtauth.DAO.RoleDAO;
 import com.example.jwtauth.DAO.UserDAO;
+import com.example.jwtauth.Entity.Formateur;
 import com.example.jwtauth.Entity.Role;
 import com.example.jwtauth.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class UserService {
     private UserDAO userDAO;
     @Autowired
     private RoleDAO roleDAO;
+    @Autowired
+    private FormateurRepository formateurRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -80,8 +84,11 @@ public class UserService {
 //        userDAO.save(user);
 
     }
-
+//
     public String getEncodedPassword(String password){
         return passwordEncoder.encode(password);
     }
+
+
+
 }

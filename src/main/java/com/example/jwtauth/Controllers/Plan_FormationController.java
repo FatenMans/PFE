@@ -73,4 +73,9 @@ public class Plan_FormationController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/search/{theme}")
+    public List<Plan_Formation> findByTheme(@PathVariable("theme") String theme) {
+        return planFormationService.findByTheme(theme);
+    }
 }

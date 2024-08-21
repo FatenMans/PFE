@@ -14,7 +14,8 @@ public interface ParticipantRepository extends JpaRepository<Participant,Long> {
 
     Optional<Participant> findByEmail(String email);
 
-
     Optional<Participant> findByNom(String nom);
+
+
 
 }

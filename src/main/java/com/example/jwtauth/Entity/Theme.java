@@ -24,7 +24,7 @@ public class Theme extends  Auditable{
     private String codeTheme;
     private String theme;
 
-    private String typeThemeIntraInter;
+    private String typeFormation;
     private String accord;
 
 

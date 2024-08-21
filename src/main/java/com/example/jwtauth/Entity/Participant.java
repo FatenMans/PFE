@@ -22,8 +22,12 @@ public class  Participant extends  Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+private  String code;
+private String cin;
+private  String tel;
     private String nom;
+    private String autorisation;
+
     private String prenom;
 
     private String lieutravail;
@@ -89,6 +93,7 @@ public class  Participant extends  Auditable{
     private Set<Demande> demandes;
 
 
-
+    private String cvFileName;
+   
 
 }

@@ -23,6 +23,12 @@ public class DemandeController {
 private DemandeRepository demandeRepository;
 
 
+
+
+    @PostMapping("/create/{themeId}")
+    public ResponseEntity<Demande> createDemande(@RequestBody Demande demande, @RequestParam String nom,@PathVariable Long themeId) {
+        return ResponseEntity.ok(demandeService.createDemande(demande, nom,themeId));
+    }
     @PostMapping("/create")
     public ResponseEntity<Demande> createDemande(@RequestBody Demande demande, @RequestParam String nom) {
         return ResponseEntity.ok(demandeService.createDemande(demande, nom));

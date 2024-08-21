@@ -42,6 +42,8 @@ public class Formateur extends Auditable{
     private boolean isEnabled=false;
 
     private String CvFileName;
+    private boolean interne; // true pour interne, false pour externe
+
 
 
 
@@ -53,6 +55,11 @@ public class Formateur extends Auditable{
     @OneToMany(mappedBy = "formateur")
     @JsonIgnoreProperties("formateur")
     private Set<Formation> formations;
-
+    @ManyToMany
+    @JoinTable(
+            name = "formateur_theme",
+            joinColumns = @JoinColumn(name = "formateur_id"),
+            inverseJoinColumns = @JoinColumn(name = "theme_id"))
+    private Set<Theme> themes;
 
 }

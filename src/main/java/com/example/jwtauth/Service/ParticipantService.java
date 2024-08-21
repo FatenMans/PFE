@@ -1,12 +1,12 @@
 package com.example.jwtauth.Service;
 
+import com.example.jwtauth.DAO.FormateurRepository;
+import com.example.jwtauth.DAO.FormationRepository;
 import com.example.jwtauth.DAO.LieuHebergementRepository;
 import com.example.jwtauth.DAO.ParticipantRepository;
-import com.example.jwtauth.Entity.Formation;
-import com.example.jwtauth.Entity.LieuHebergement;
-import com.example.jwtauth.Entity.Participant;
-import com.example.jwtauth.Entity.User;
+import com.example.jwtauth.Entity.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,15 +15,21 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ParticipantService {
 
     @Autowired
     private ParticipantRepository participantRepository;
+    private final String uploadDir = "uploads/";
 
     @Autowired
     private LieuHebergementRepository lieuHebergementRepository;
@@ -32,6 +38,10 @@ public class ParticipantService {
     private JavaMailSender javaMailSender;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private FormateurRepository formateurRepository;
+    @Autowired
+    private FormationRepository formationRepository;
 
 
     @Value("${spring.mail.username}")
@@ -47,11 +57,14 @@ public class ParticipantService {
     public Optional<Participant> getParticipantById(Long id) {
         return participantRepository.findById(id);
     }
-    public Optional<Participant> findByemail (String email) {
+
+    public Optional<Participant> findByemail(String email) {
         return participantRepository.findByEmail(email);
     }
+
     public Participant createParticipant(Participant participant, Long lieuHebergementId) {
-        Optional<Participant> existingParticipant = participantRepository.findByEmail(participant.getEmail());;
+        Optional<Participant> existingParticipant = participantRepository.findByEmail(participant.getEmail());
+        ;
         if (existingParticipant.isPresent()) {
             throw new IllegalArgumentException("Une participant avec ce email existe déjà.");
         }
@@ -60,14 +73,12 @@ public class ParticipantService {
 
         participant.getLieuxHebergement().add(lieuHebergement);
 
-        User user=new User();
+        User user = new User();
         System.out.println("participant.getNom() = " + participant.getNom());
         System.out.println("participant.getPassword() = " + participant.getPassword());
         user.setUserName(participant.getNom());
         user.setUserPassword(participant.getPassword());
         userService.createNewUser(user);
-
-
 
 
         try {
@@ -85,7 +96,6 @@ public class ParticipantService {
 
         return participantRepository.save(participant);
     }
-
 
 
     public void deleteParticipant(Long id) {
@@ -130,10 +140,10 @@ public class ParticipantService {
             participant.setAgePers(updatedParticipant.getAgePers());
             participant.setMatricule(updatedParticipant.getMatricule());
             participant.setEnabled(updatedParticipant.isEnabled());
-        participant.setCreatedBy(updatedParticipant.getCreatedBy());
-        participant.setCreationDate(updatedParticipant.getCreationDate());
-        participant.setLastModifiedBy(updatedParticipant.getLastModifiedBy());
-        participant.setLastModifiedDate(updatedParticipant.getLastModifiedDate());
+            participant.setCreatedBy(updatedParticipant.getCreatedBy());
+            participant.setCreationDate(updatedParticipant.getCreationDate());
+            participant.setLastModifiedBy(updatedParticipant.getLastModifiedBy());
+            participant.setLastModifiedDate(updatedParticipant.getLastModifiedDate());
 
             if (lieuHebergementId != null) {
                 LieuHebergement lieuHebergement = lieuHebergementRepository.findById(lieuHebergementId)
@@ -146,14 +156,17 @@ public class ParticipantService {
             return null;
         }
     }
-    public String getEncodedPassword(String password){
+
+    public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);
     }
+
     public void becomeInternalTrainer(Long id) {
         Participant participant = participantRepository.findById(id).orElseThrow(() -> new RuntimeException("Participant not found"));
         participant.setIsInternalTrainer(true);
         participantRepository.save(participant);
     }
+
     // Other s
     public Optional<Participant> getParticipantByEmail(String email) {
         return participantRepository.findByEmail(email);
@@ -163,4 +176,61 @@ public class ParticipantService {
     public Optional<Participant> getParticipantByNom(String email) {
         return participantRepository.findByNom(email);
     }
+    public Participant updateParticipantAndAddFile(String nom, MultipartFile file) throws IOException {
+        Optional<Participant> optionalParticipant = participantRepository.findByNom(nom);
+        if (optionalParticipant.isPresent()) {
+            Participant participant = optionalParticipant.get();
+            participant.setCvFileName(file.getOriginalFilename());
+            File uploadFile = new File(uploadDir + file.getOriginalFilename());
+            try (FileOutputStream fos = new FileOutputStream(uploadFile)) {
+                fos.write(file.getBytes());
+            }
+
+            return participantRepository.save(participant);
+        }
+        return null;
+    }
+    @Transactional
+    public void convertParticipantToFormateur(Long participantId) {
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("Participant not found"));
+
+        // Create Formateur from Participant
+        Formateur formateur = new Formateur();
+        formateur.setTypeFormateur("Interne");
+        formateur.setCode(participant.getCode());
+        formateur.setCin(participant.getCin());
+        formateur.setTel(participant.getTel());
+        formateur.setAutorisation("autorisation Interne");
+        formateur.setNom(participant.getNom());
+        formateur.setPrenom(participant.getPrenom());
+        formateur.setMail(participant.getEmail());
+        formateur.setMatricule(participant.getMatricule());
+        formateur.setCvFileName(participant.getCvFileName());
+        formateur.setEnabled(true);  // Enable the formateur
+// Check if demandes is not null and has at least one element
+        Set<Demande> demandesSet = participant.getDemandes();
+
+        if (demandesSet != null && !demandesSet.isEmpty()) {
+            // Iterate through the Set
+            Demande firstDemande = demandesSet.iterator().next();
+            Theme theme = firstDemande.getTheme();
+            formateur.setThemes(Set.of(theme));
+            // Use the theme as needed
+        } else {
+            // Handle the case where demandes is null or empty
+            System.out.println("No demandes available");
+        }
+
+        // Save the Formateur entity
+        formateurRepository.save(formateur);
+
+        // Delete the Participant entity since they are now a formateur
+        participantRepository.delete(participant);
+    }
+    public List<Participant> findByFormationId(Long formationId) {
+        return participantRepository.findByFormationsId(formationId);
+    }
+
+
 }

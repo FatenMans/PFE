@@ -1,16 +1,18 @@
 package com.example.jwtauth.Controllers;
 
+import com.example.jwtauth.DAO.FormateurRepository;
 import com.example.jwtauth.DAO.LieuHebergementRepository;
 import com.example.jwtauth.DAO.ParticipantRepository;
-import com.example.jwtauth.Entity.Formation;
-import com.example.jwtauth.Entity.LieuHebergement;
-import com.example.jwtauth.Entity.Participant;
+import com.example.jwtauth.Entity.*;
 import com.example.jwtauth.Service.ParticipantService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,8 @@ public class ParticipantController {
     private LieuHebergementRepository lieuHebergementRepository;
     @Autowired
     private ParticipantRepository participantRepository;
+    @Autowired
+    private FormateurRepository formateurRepository;
 
     @Autowired
     public ParticipantController(ParticipantService participantService) {
@@ -97,4 +101,17 @@ public class ParticipantController {
         participantService.deleteParticipant(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/addFile")
+    public ResponseEntity<Participant> updateParticpant(@RequestParam String nom, @RequestParam MultipartFile file) throws IOException {
+        Participant updatedParticipant = participantService.updateParticipantAndAddFile(nom, file);
+        return updatedParticipant != null ? ResponseEntity.ok(updatedParticipant) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+    @PostMapping("/convert-participant/{id}")
+    public ResponseEntity<String> convertParticipantToFormateur(@PathVariable Long id) {
+        participantService.convertParticipantToFormateur(id);
+        return ResponseEntity.ok("Participant converted to Formateur.");
+    }
+
+
 }

@@ -1,8 +1,10 @@
 package com.example.jwtauth.Service;
 
+import com.example.jwtauth.DAO.ThemeRepository;
 import com.example.jwtauth.Entity.Demande;
 import com.example.jwtauth.Entity.DemandeRepository;
 import com.example.jwtauth.Entity.Participant;
+import com.example.jwtauth.Entity.Theme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,19 @@ public class DemandeService {
 
     @Autowired
     private ParticipantService participantService;
+    @Autowired
+    private ThemeRepository themeRepository;
+
+    public Demande createDemande(Demande demande, String nom, Long themeId) {
+        Theme theme= themeRepository.findById(themeId).orElseThrow(()->new RuntimeException("Theme not found"));
+        demande.setTheme(theme);
+        Optional<Participant> participant = participantService.getParticipantByNom(nom);
+        if (participant.isPresent()) {
+            demande.setParticipant(participant.get());
+            return demandeRepository.save(demande);
+        }
+        throw new IllegalArgumentException("Participant not found with nom: " + nom);
+    }
 
     public Demande createDemande(Demande demande, String nom) {
         Optional<Participant> participant = participantService.getParticipantByNom(nom);
@@ -30,10 +45,18 @@ public class DemandeService {
 
 
     public List<Demande> getAllDemandes() {
-        return demandeRepository.findAll();
+
+
+        return demandeRepository.findByValideeFalse();
     }
 
     public void acceptDemande(Long id) {
+        // Récupérer la demande existante
+        Demande demande = demandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Demande non trouvée"));
+        demande.setValidee(true);
+        demandeRepository.save(demande);
+
         // Implement acceptance logic if needed
     }
 
@@ -51,9 +74,7 @@ public class DemandeService {
         // Sauvegarder la demande mise à jour
         demandeRepository.save(demande);
 
-        // Supprimer les demandes non validées après 30 jours
-        LocalDate thresholdDate = LocalDate.now().minusDays(30);
-        demandeRepository.deleteByValideeFalseAndDateDemandeBefore(thresholdDate);
+
     }
 }
 

@@ -4,6 +4,7 @@ package com.example.jwtauth.Controllers;
 import com.example.jwtauth.DAO.FormationRepository;
 import com.example.jwtauth.DAO.ThemeRepository;
 import com.example.jwtauth.Entity.Formation;
+import com.example.jwtauth.Entity.Participant;
 import com.example.jwtauth.Entity.Theme;
 import com.example.jwtauth.Service.FormationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/formations")
@@ -76,5 +78,15 @@ public class FormationController {
         List<Formation> formations = formationService.getFormationsByParticipantId(id);
         return ResponseEntity.ok(formations);
     }
+    @PostMapping("/{formationId}/invite/{participantId}")
+    public ResponseEntity<Formation> inviteParticipant(@PathVariable Long formationId, @PathVariable Long participantId) {
+        Formation formation = formationService.inviteParticipant(formationId, participantId);
+        return ResponseEntity.ok(formation);
+    }
 
+    @GetMapping("/{formationId}/participants")
+    public ResponseEntity<Set<Participant>> getFormationParticipants(@PathVariable Long formationId) {
+        Set<Participant> participants = formationService.getFormationParticipants(formationId);
+        return ResponseEntity.ok(participants);
+    }
 }

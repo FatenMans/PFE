@@ -1,6 +1,8 @@
 package com.example.jwtauth.Service;
 import com.example.jwtauth.DAO.FormateurRepository;
+import com.example.jwtauth.DAO.ThemeRepository;
 import com.example.jwtauth.Entity.Formateur;
+import com.example.jwtauth.Entity.Theme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,13 +14,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FormateurService {
 
     private final FormateurRepository formateurRepository;
+    @Autowired
+    private ThemeRepository themeRepository;
 
 
     @Autowired
@@ -32,9 +35,14 @@ public class FormateurService {
         this.formateurRepository = formateurRepository;
     }
 
+
     public List<Formateur> getAllFormateurs() {
         return formateurRepository.findAll();
     }
+    public List<Formateur> getAllFormateursByTheme(String theme) {
+        return formateurRepository.findByTheme(theme);
+    }
+
 
     public Optional<Formateur> getFormateurById(Long id) {
         return formateurRepository.findById(id);
@@ -43,11 +51,24 @@ public class FormateurService {
         return formateurRepository.findByCin(cin);
     }
 
-    public Formateur saveFormateur(Formateur formateur) {
+    public Formateur createFormateurWithTheme(Formateur formateur, Long themeId) {
+        // Vérification du duplicata du CIN
         Optional<Formateur> existingFormateur = formateurRepository.findByCin(formateur.getCin());
-        if (existingFormateur.isPresent() && !existingFormateur.get().getId().equals(formateur.getId())) {
+        if (existingFormateur.isPresent()) {
             throw new IllegalArgumentException("Un formateur avec ce CIN existe déjà.");
         }
+
+        // Récupération du thème par son ID
+        Optional<Theme> themeOpt = themeRepository.findById(themeId);
+        if (!themeOpt.isPresent()) {
+            throw new IllegalArgumentException("Le thème avec cet ID n'existe pas.");
+        }
+        Theme theme = themeOpt.get();
+
+        // Association du thème au formateur
+        formateur.setThemes(new HashSet<>(Collections.singletonList(theme)));
+
+        // Enregistrement du formateur avec le thème associé
         return formateurRepository.save(formateur);
     }
 
@@ -116,7 +137,23 @@ public class FormateurService {
 
 
     }
+    public Formateur ajouterThemesAuFormateur(Long formateurId, List<Long> themeIds) {
+        Formateur formateur = formateurRepository.findById(formateurId)
+                .orElseThrow(() -> new RuntimeException("Formateur non trouvé"));
 
+        // Trouver les thèmes en fonction des IDs fournis
+        List<Theme> themeList = themeRepository.findAllById(themeIds);
 
+        // Convertir la liste des thèmes en ensemble
+        Set<Theme> themeSet = new HashSet<>(themeList);
 
+        // Ajouter les thèmes à l'ensemble des thèmes du formateur
+        formateur.getThemes().addAll(themeSet);
+
+        // Sauvegarder les modifications
+        return formateurRepository.save(formateur);
+    }
+    public List<Formateur> findByNomContaining(String nom) {
+        return formateurRepository.findByNomContaining(nom);
+    }
 }

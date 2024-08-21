@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class Plan_FormationService {
@@ -74,5 +75,9 @@ public class Plan_FormationService {
     public Optional<Plan_Formation> addParticipantToFormation(Long formationId, Long participantId) {
         // Implement this method according to your requirements
         return Optional.empty();
+    }
+
+    public List<Plan_Formation> findByTheme(String theme) {
+        return planFormationRepository.findByTheme(theme);
     }
 }
