@@ -5,6 +5,7 @@ import com.example.jwtauth.Entity.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +106,8 @@ public class FormationService {
     public List<Formation> getFormationsByParticipant(Long participantId) {
         return formationRepository.findByParticipantsId(participantId);
     }
+
+    @Transactional
     public void addParticipantToFormation(Long formationId, String participantnom) {
         // Retrieve formation by ID
         Formation formation = formationRepository.findById(formationId)
@@ -115,7 +118,10 @@ public class FormationService {
                 .orElseThrow(() -> new EntityNotFoundException("Participant not found"));
 
         // Add participant to formation
+        participant.getFormations().add(formation);
+
         formation.getParticipants().add(participant);
+
 
         // Save the updated formation
         formationRepository.save(formation);
