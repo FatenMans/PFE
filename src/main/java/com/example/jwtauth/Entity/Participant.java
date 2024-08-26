@@ -73,7 +73,7 @@ private  String tel;
     private String lastModifiedBy; // Ajout du champ pour la traçabilité
 
 
-    @ManyToMany(mappedBy = "participants")
+    @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Formation> formations;
     @ManyToMany

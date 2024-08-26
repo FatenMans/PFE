@@ -51,7 +51,37 @@ public class UserService {
                 .body(savedUser);
     }
 
+    public ResponseEntity<?> createFormateur(User user) {
+        // Check if the username  is already taken
+        if (userDAO.findByUserName(user.getUserName()) != null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Username is already taken.");
+        }
+
+        Role role = roleDAO.findById("Formateur").get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setRole(roles);
+
+        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+
+        User savedUser = userDAO.save(user);
+        System.out.println("savedUser = " + savedUser);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedUser);
+    }
+
     public void initRolesAndUser(){
+
+        Role RoleFormateur=new Role();
+        RoleFormateur.setRoleName("Formateur");
+        RoleFormateur.setRoleDescription("Formateur role");
+        roleDAO.save(RoleFormateur);
+
+
         Role roleAdmin=new Role();
         roleAdmin.setRoleName("Admin");
         roleAdmin.setRoleDescription("Admin role");
@@ -61,6 +91,7 @@ public class UserService {
         roleUser.setRoleName("User");
         roleUser.setRoleDescription("User role");
         roleDAO.save(roleUser);
+
 
 
         User admin=new User();

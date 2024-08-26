@@ -33,6 +33,8 @@ public class Formateur extends Auditable{
     private String etatique_privé;
     private Integer montant;
 
+    private String password;
+
     private Double rang;
     private String autorisation;
     private  String typeFormateur;

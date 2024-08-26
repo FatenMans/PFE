@@ -1,9 +1,11 @@
 package com.example.jwtauth.Controllers;
 import com.example.jwtauth.Entity.Formateur;
 import com.example.jwtauth.Entity.Theme;
+import com.example.jwtauth.Entity.User;
 import com.example.jwtauth.Service.EmailService;
 import com.example.jwtauth.Service.FormateurService;
 import com.example.jwtauth.Service.ThemeService;
+import com.example.jwtauth.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ public class FormateurController {
     private EmailService emailService;
     @Autowired
     private ThemeService themeService;
+    @Autowired
+    private UserService userService;
 
 
     @Autowired
@@ -66,7 +70,17 @@ public class FormateurController {
             }
 
             // Enregistrement du formateur avec le thème associé
+
+
             Formateur newFormateur = formateurService.createFormateurWithTheme(formateur, themeId);
+            User user=new User();
+            user.setUserName(formateur.getNom());
+            user.setUserPassword(formateur.getPassword());
+            userService.createFormateur(user);
+
+
+
+
             return new ResponseEntity<>(newFormateur, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
