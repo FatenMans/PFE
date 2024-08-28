@@ -59,6 +59,9 @@ private  String tel;
     private Boolean hebergementNuite;
 
 
+    private String note;
+    private String commentaire;
+
 
 
 
@@ -85,7 +88,8 @@ private  String tel;
     )
     private Set<LieuHebergement> lieuxHebergement = new HashSet<>();
 
-
+    @OneToMany(mappedBy = "participant")
+    private Set<Evaluation> evaluations;
 
 
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -93,7 +97,8 @@ private  String tel;
     private Set<Demande> demandes;
 
 
+
     private String cvFileName;
-   
+
 
 }

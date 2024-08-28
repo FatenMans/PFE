@@ -1,14 +1,10 @@
 package com.example.jwtauth.Controllers;
 
 
-import com.example.jwtauth.DAO.FormationRepository;
-import com.example.jwtauth.DAO.ThemeRepository;
 import com.example.jwtauth.Entity.Formation;
 import com.example.jwtauth.Entity.Participant;
-import com.example.jwtauth.Entity.Theme;
 import com.example.jwtauth.Service.FormationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,5 +84,9 @@ public class FormationController {
     public ResponseEntity<Set<Participant>> getFormationParticipants(@PathVariable Long formationId) {
         Set<Participant> participants = formationService.getFormationParticipants(formationId);
         return ResponseEntity.ok(participants);
+    }
+    @GetMapping("/search/{theme}")
+    public List<Formation> findByTheme(@PathVariable("theme") String theme) {
+        return formationService.findByTheme(theme);
     }
 }

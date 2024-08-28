@@ -141,6 +141,10 @@ public class FormationService {
         Formation formation = formationRepository.findById(formationId).orElseThrow(() -> new RuntimeException("Formation not found"));
         return formation.getParticipants();
     }
+    public List<Formation> findByTheme(String theme) {
+        return formationRepository.findByTheme(theme);
+    }
+
 
 }
 

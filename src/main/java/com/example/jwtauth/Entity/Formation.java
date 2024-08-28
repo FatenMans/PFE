@@ -59,7 +59,7 @@ public class Formation  extends  Auditable{
     @JoinColumn(name = "lieu_id")
     private Lieu lieu;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "Formation_Participant",
             joinColumns = @JoinColumn(name = "formation_id"),
@@ -72,5 +72,8 @@ public class Formation  extends  Auditable{
     @JoinColumn(name = "theme_id")
     @JsonIgnoreProperties("formations")
     private Theme theme;
+
+    @OneToMany(mappedBy = "formation")
+    private Set<Evaluation> evaluations;
 
 }
