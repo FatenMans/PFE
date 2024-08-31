@@ -24,10 +24,10 @@ public class EvaluationService {
     @Autowired
     private EvaluationRepository evaluationRepository;
 
-    public void createEvaluation(Long participantId, Long formationId, Evaluation evaluation) {
+    public void createEvaluation(String participantNom, Long formationId, Evaluation evaluation) {
         // Set participantId and formationId in the evaluation entity if necessary
         // For example:
-        Participant participant = participantRepository.findById(participantId)
+        Participant participant = participantRepository.findByNom(participantNom)
                 .orElseThrow(() -> new NoSuchElementException("Participant not found"));
         Formation formation = formationRepository.findById(formationId)
                 .orElseThrow(() -> new NoSuchElementException("Formation not found"));

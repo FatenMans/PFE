@@ -69,9 +69,9 @@ public class FormationController {
     }
 
 
-    @GetMapping("/by-participant/{id}")
-    public ResponseEntity<List<Formation>> getFormationsByParticipant(@PathVariable Long id) {
-        List<Formation> formations = formationService.getFormationsByParticipantId(id);
+    @GetMapping("/by-participant/{nom}")
+    public ResponseEntity<List<Formation>> getFormationsByParticipant(@PathVariable String nom) {
+        List<Formation> formations = formationService.getFormationsByParticipantId(nom);
         return ResponseEntity.ok(formations);
     }
     @PostMapping("/{formationId}/invite/{participantId}")

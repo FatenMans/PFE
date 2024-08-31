@@ -103,9 +103,7 @@ public class FormationService {
         formationRepository.deleteById(id);
     }
 
-    public List<Formation> getFormationsByParticipant(Long participantId) {
-        return formationRepository.findByParticipantsId(participantId);
-    }
+
 
     @Transactional
     public void addParticipantToFormation(Long formationId, String participantnom) {
@@ -126,8 +124,8 @@ public class FormationService {
         // Save the updated formation
         formationRepository.save(formation);
     }
-    public List<Formation> getFormationsByParticipantId(Long id) {
-        return formationRepository.findByParticipantsId(id);
+    public List<Formation> getFormationsByParticipantId(String nom) {
+        return formationRepository.findByParticipantsNom(nom);
     }
     public Formation inviteParticipant(Long formationId, Long participantId) {
         Formation formation = formationRepository.findById(formationId).orElseThrow(() -> new RuntimeException("Formation not found"));

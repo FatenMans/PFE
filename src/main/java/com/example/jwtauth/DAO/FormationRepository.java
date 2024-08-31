@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface FormationRepository extends JpaRepository<Formation,Long> {
     Optional<Formation> findByNomFormation(String cin);
 
-    List<Formation>findByParticipantsId(Long participantId);
+    List<Formation>findByParticipantsNom(String nom);
 
 
     @Query("SELECT pf FROM Plan_Formation pf WHERE pf.theme.theme = :theme")

@@ -52,7 +52,7 @@ public class Formation  extends  Auditable{
 
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIgnoreProperties({"cabinetFormation","formations","themes"})
     @JoinColumn(name = "formateur_id")
     private Formateur formateur;
 

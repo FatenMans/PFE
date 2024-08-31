@@ -15,14 +15,14 @@ public class EvaluationController {
     @Autowired
     private EvaluationService evaluationService;
 
-    @PostMapping("/create/{participantId}/{formationId}")
+    @PostMapping("/create/{participantNom}/{formationId}")
     public ResponseEntity<?> createEvaluation(
-            @PathVariable Long participantId,
+            @PathVariable String participantNom,
             @PathVariable Long formationId,
             @RequestBody Evaluation evaluation
     ) {
         try {
-            evaluationService.createEvaluation(participantId, formationId, evaluation);
+            evaluationService.createEvaluation(participantNom, formationId, evaluation);
             return ResponseEntity.ok("Evaluation submitted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error submitting evaluation");

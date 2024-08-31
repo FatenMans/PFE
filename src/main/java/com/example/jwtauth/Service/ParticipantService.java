@@ -193,6 +193,11 @@ public class ParticipantService {
         Participant participant = participantRepository.findById(participantId)
                 .orElseThrow(() -> new RuntimeException("Participant not found"));
 
+        for (Formation formation : participant.getFormations()) {
+            formation.getParticipants().remove(participant);
+        }
+
+        participant.getFormations().clear();
 
 
         // Create Formateur from Participant
