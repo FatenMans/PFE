@@ -9,6 +9,8 @@ import com.example.jwtauth.Entity.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.event.PaintEvent;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,16 +24,29 @@ public class EvaluationService {
     @Autowired
     private EvaluationRepository evaluationRepository;
 
-    public Evaluation createEvaluation(Long participantId, Long formationId, Evaluation evaluation) {
+    public void createEvaluation(Long participantId, Long formationId, Evaluation evaluation) {
+        // Set participantId and formationId in the evaluation entity if necessary
+        // For example:
         Participant participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new NoSuchElementException("Participant not found with id " + participantId));
+                .orElseThrow(() -> new NoSuchElementException("Participant not found"));
         Formation formation = formationRepository.findById(formationId)
-                .orElseThrow(() -> new NoSuchElementException("Formation not found with id " + formationId));
+                .orElseThrow(() -> new NoSuchElementException("Formation not found"));
 
-        evaluation.setParticipant(participant);
-        evaluation.setFormation(formation);
+         evaluation.setParticipant(participant);
+         evaluation.setFormation(formation);
 
-        return evaluationRepository.save(evaluation);
+        evaluationRepository.save(evaluation);
+    }
+
+
+
+    public List<Evaluation> getAllEvaluations() {
+        return evaluationRepository.findAll();
+    }
+
+
+    public void deleteEvaluation(Long id) {
+        evaluationRepository.deleteById(id);
     }
 }
 

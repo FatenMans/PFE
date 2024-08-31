@@ -195,6 +195,8 @@ public class ParticipantService {
         Participant participant = participantRepository.findById(participantId)
                 .orElseThrow(() -> new RuntimeException("Participant not found"));
 
+
+
         // Create Formateur from Participant
         Formateur formateur = new Formateur();
         formateur.setTypeFormateur("Interne");

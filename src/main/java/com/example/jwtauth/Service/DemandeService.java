@@ -76,6 +76,10 @@ public class DemandeService {
 
 
     }
+
+    public Demande getDemandeById(Long id){
+        return demandeRepository.findById(id).orElseThrow(()->new RuntimeException("Demande not found"));
+    }
 }
 
 

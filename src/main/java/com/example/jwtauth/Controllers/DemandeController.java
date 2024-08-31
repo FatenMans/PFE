@@ -51,4 +51,12 @@ private DemandeRepository demandeRepository;
         demandeService.refuserDemande(id);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Demande> getDemandeById(@PathVariable Long id) {
+        Optional<Demande> demande = demandeRepository.findById(id);
+        if (demande.isPresent()) {
+            return ResponseEntity.ok(demande.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

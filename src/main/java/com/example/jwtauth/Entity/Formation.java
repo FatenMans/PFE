@@ -52,14 +52,17 @@ public class Formation  extends  Auditable{
 
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "formateur_id")
     private Formateur formateur;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "lieu_id")
     private Lieu lieu;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinTable(
             name = "Formation_Participant",
             joinColumns = @JoinColumn(name = "formation_id"),

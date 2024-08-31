@@ -7,18 +7,38 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/evaluations")
+@RequestMapping("/api/evaluations")
 public class EvaluationController {
     @Autowired
     private EvaluationService evaluationService;
 
     @PostMapping("/create/{participantId}/{formationId}")
-    public ResponseEntity<Evaluation> createEvaluation(
-            @RequestParam Long participantId,
-            @RequestParam Long formationId,
-            @RequestBody Evaluation evaluation) {
-        Evaluation createdEvaluation = evaluationService.createEvaluation(participantId, formationId, evaluation);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvaluation);
+    public ResponseEntity<?> createEvaluation(
+            @PathVariable Long participantId,
+            @PathVariable Long formationId,
+            @RequestBody Evaluation evaluation
+    ) {
+        try {
+            evaluationService.createEvaluation(participantId, formationId, evaluation);
+            return ResponseEntity.ok("Evaluation submitted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error submitting evaluation");
+        }
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteEvaluation(@PathVariable Long id) {
+            evaluationService.deleteEvaluation(id);
+
+    }
+
+
+    @GetMapping
+    public List<Evaluation> getAllEvaluations() {
+        return evaluationService.getAllEvaluations();
     }
 }
