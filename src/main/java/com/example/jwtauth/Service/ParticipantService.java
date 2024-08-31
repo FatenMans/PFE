@@ -1,9 +1,6 @@
 package com.example.jwtauth.Service;
 
-import com.example.jwtauth.DAO.FormateurRepository;
-import com.example.jwtauth.DAO.FormationRepository;
-import com.example.jwtauth.DAO.LieuHebergementRepository;
-import com.example.jwtauth.DAO.ParticipantRepository;
+import com.example.jwtauth.DAO.*;
 import com.example.jwtauth.Entity.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -20,9 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ParticipantService {
@@ -49,6 +44,9 @@ public class ParticipantService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserDAO userDAO;
 
     public List<Participant> getAllParticipants() {
         return participantRepository.findAll();
@@ -226,6 +224,14 @@ public class ParticipantService {
 
         // Save the Formateur entity
         formateurRepository.save(formateur);
+
+        User user=userDAO.findByUserName(participant.getNom());
+        Set<Role>roles=new HashSet<>();
+        roles.add(new Role("Formateur","Formateur"));
+        user.setRole(roles);
+
+        userDAO.save(user);
+
 
         // Delete the Participant entity since they are now a formateur
         participantRepository.delete(participant);
